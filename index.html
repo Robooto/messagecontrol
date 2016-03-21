@@ -48,7 +48,9 @@
             return target.replace(new RegExp(search, 'g'), replacement);
         };
         $(document).ready(function() {
-            $('#voiceTemplate').remindermessage();
+            $('#voiceTemplate').remindermessage({
+                count: 10
+            });
         });
     </script>
 </body>

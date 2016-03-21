@@ -1,6 +1,6 @@
 $.widget('oa.remindermessage', {
     options: {
-        count: 10,
+        count: 60,
         wordList: [{
                 value: 'Patient First Name',
                 abr: 'Pat. First Name',
@@ -115,14 +115,24 @@ $.widget('oa.remindermessage', {
         this._render();
     },
     _keyblock: function(e) {
-        if (this.element.text().length >= this.options.count && e.keyCode !== 8) {
+        console.log(e.keyCode);
+        var key = event.keyCode || event.charCode;
+        var isNotBackspaceOrDelete;
+
+        if (key === 8 || key === 46) {
+            isNotBackspaceOrDelete = false;
+        } else {
+            isNotBackspaceOrDelete = true;
+        }
+        console.log(isNotBackspaceOrDelete);
+        if (this.element.text().length >= this.options.count && isNotBackspaceOrDelete) {
             //TODO Stop typing
             console.log(e);
             e.stopPropagation();
             e.preventDefault();
             return false;
         }
-            
+
     },
     checkTemplates: function(e) {
         var htmlButtons = this.element.find('input');
