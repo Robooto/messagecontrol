@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Mate</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Optional theme -->
+    <style>
+        #voiceTemplate{
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <hr/>
+                <div class="form-group">
+                    <label for="voiceTemplate">Voice Message <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span></label>
+                    <div id="voiceTemplate" class="form-control" contenteditable="true">Hello {PatientFirstName} {PatientLastName}</div>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.12.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="js/rmMessageWidget.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#voiceTemplate').remindermessage();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "messagecontrol",
+  "main": "index.js",
+  "authors": [
+    "Robooto <samrussell63@gmail.com>"
+  ],
+  "description": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.2",
+    "jquery-ui": "^1.11.4",
+    "bootstrap": "^3.3.6"
+  }
+}
