@@ -1,180 +1,181 @@
-$.widget("oa.remindermessage", {
+$.widget('oa.remindermessage', {
     options: {
         count: 60,
         wordList: [{
-            value: 'Patient First Name',
-            abr: 'Pat. First Name',
-            template: '{PatientFirstName}',
-            name: 'patFirstName'
-        }, {
-            value: 'Patient Last Name',
-            abr: 'Pat. Last Name',
-            template: '{PatientLastName}',
-            name: 'patLastName'
-        }, {
-            value: 'Provider First Name',
-            abr: 'Pro. First Name',
-            template: '{ProviderFirstName}',
-            name: 'proFirstName'
-        }, {
-            value: 'Provider Last Name',
-            abr: 'Pro. First Name',
-            template: '{ProviderLastName}',
-            name: 'proLastName'
-        }, {
-            value: 'Appointment Date',
-            abr: 'App. Date',
-            template: '{AppDate}',
-            name: 'appDate'
-        }, {
-            value: 'Appointment Time',
-            abr: 'App. Time',
-            template: '{AppTime}',
-            name: 'appTime'
-        }, {
-            value: 'Office Name',
-            abr: 'Office Name',
-            template: '{OfficeName}',
-            name: 'oName'
-        }],
+                value: 'Patient First Name',
+                abr: 'Pat. First Name',
+                template: '{PatientFirstName}',
+                name: 'patFirstName'
+            }, {
+                value: 'Patient Last Name',
+                abr: 'Pat. Last Name',
+                template: '{PatientLastName}',
+                name: 'patLastName'
+            }, {
+                value: 'Provider First Name',
+                abr: 'Pro. First Name',
+                template: '{ProviderFirstName}',
+                name: 'proFirstName'
+            }, {
+                value: 'Provider Last Name',
+                abr: 'Pro. First Name',
+                template: '{ProviderLastName}',
+                name: 'proLastName'
+            }, {
+                value: 'Appointment Date',
+                abr: 'App. Date',
+                template: '{AppDate}',
+                name: 'appDate'
+            }, {
+                value: 'Appointment Time',
+                abr: 'App. Time',
+                template: '{AppTime}',
+                name: 'appTime'
+            }, {
+                value: 'Office Name',
+                abr: 'Office Name',
+                template: '{OfficeName}',
+                name: 'oName'
+            }
+        ],
         parseTemplateStrings: {
-            'patFirstName': function () {
+            'patFirstName': function() {
                 return '<input type="button" class="clearable" name="patFirstName" value="Patient First Name" />';
             },
-            'patLastName': function () {
+            'patLastName': function() {
                 return '<input type="button" class="clearable" name="patLastName" value="Patient Last Name" />';
             },
-            'proFirstName': function () {
-                return '<input type="button" class="clearable" name="proFirstName" value="Provider First Name" />';;
+            'proFirstName': function() {
+                return '<input type="button" class="clearable" name="proFirstName" value="Provider First Name" />';
             },
-            'proLastName': function () {
+            'proLastName': function() {
                 return '<input type="button" class="clearable" name="proLastName" value="Provider Last Name" />';
             },
-            'appDate': function () {
+            'appDate': function() {
                 return '<input type="button" class="clearable" name="appDate" value="Appointment Date" />';
             },
-            'appTime': function () {
+            'appTime': function() {
                 return '<input type="button" class="clearable" name="appTime" value="Appointment Time" />';
             },
-            'oName': function () {
+            'oName': function() {
                 return '<input type="button" class="clearable" name="oName" value="Office Name" />';
             }
         },
         templateStrings: {
-            'patFirstName': function () {
+            'patFirstName': function() {
                 return '{PatientFirstName}';
             },
-            'patLastName': function () {
+            'patLastName': function() {
                 return '{PatientLastName}';
             },
-            'proFirstName': function () {
+            'proFirstName': function() {
                 return '{ProviderFirstName}';
             },
-            'proLastName': function () {
+            'proLastName': function() {
                 return '{ProviderLastName}';
             },
-            'appDate': function () {
+            'appDate': function() {
                 return '{AppDate}';
             },
-            'appTime': function () {
+            'appTime': function() {
                 return '{AppTime}';
             },
-            'oName': function () {
+            'oName': function() {
                 return '{OfficeName}';
             }
         }
     },
-    _create: function () {      
+    _create: function() {
         console.log(this.element[0].id);
         var div = $('<div>', {});
         this.element.wrap(div);
         this.divWordList = this._createWordList();
         this.divWordList.prependTo(this.element.parent());
-        
+
         // Add char counter
         this.element.parent().append(this._createCharCounter());
-        
+
         this._on(this.element.parent(), {
-            'click.clearable': function(e){
+            'click.clearable': function(e) {
                 this._clearable(e);
             }
         });
-        
+
         this._on(this.element, {
-            keyup: function (e) {
-                this.updateCount();
+            keyup: function(e) {
+                this.updateCount(e);
                 this.checkTemplates(e);
             }
         });
-        
+
         this._render();
     },
-    checkTemplates: function(e){
+    checkTemplates: function(e) {
         var htmlButtons = this.element.find('input');
-        
+
         var wordList = this.element.parent().find('.rm-wordList');
-        var buttonTemplates = wordList.find('.btn-group-sm').find('button');
-        
+        var buttonTemplates = wordList.find('button');
+
         // Enable buttons
-        $.each(buttonTemplates, function (index,item) {
+        $.each(buttonTemplates, function(index, item) {
             $(item).attr('disabled', false);
         });
-        
+
         // Disable options that are parsed
-        $.each(htmlButtons, function (index, item) {
+        $.each(htmlButtons, function(index, item) {
             var name = $(item).attr('name');
             var templates = ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName'];
             var templateItem = $.inArray(name, templates);
-            if(templateItem > -1){
- buttonTemplates.filter('button[name='+templates[templateItem]+']').attr('disabled', true);
+            if (templateItem > -1) {
+                buttonTemplates.filter('button[name=' + templates[templateItem] + ']').attr('disabled', true);
             }
         }.bind(this));
-        
+
     },
     _createCharCounter: function() {
         var span = $('<span>', {
             style: 'display: block; text-align: left;',
             'class': 'h6',
-            html: '<span>' + this.countLeft() + '</span>'  + ' / ' + this.options.count + ' characters'
+            html: '<span>' + this.countLeft() + '</span>' + ' / ' + this.options.count + ' characters'
         });
-        
+
         return span;
     },
     countLeft: function() {
         return this.element.text().length;
     },
-    updateCount: function () {
+    updateCount: function(e) {
         if (this.element.text().length > this.options.count) {
-//            this.element.text(this.element.text().substr(0, this.options.count));
+            //TODO Stop typing
+            return false;
         }
         this.element.siblings('span').children('span').text(this.countLeft());
     },
-    _setOptions: function (key, value) {
+    _setOptions: function(key, value) {
         $.Widget.prototype._setOptions.call(this, key, value);
         this._super(key, value);
         this._render();
     },
-    _render: function () {
+    _render: function() {
         this.parseTemplateString();
         this.updateCount();
     },
-    _clearable: function (event) {
+    _clearable: function(event) {
         var name = $(event.target).attr('name');
-        this.enableOption(name);
+        this.toggleOption(false, name);
         $(event.target).remove();
-
     },
     parseTemplateString: function() {
         var html = this.element.html();
         var pTempString = this.options.parseTemplateStrings;
-        
+
         // Disable options that are parsed
-        $.each(this.options.wordList, function(index, item){
-            if(html.indexOf(item.template) > -1) {
-                this.disableOption(item.name);          
+        $.each(this.options.wordList, function(index, item) {
+            if (html.indexOf(item.template) > -1) {
+                this.toggleOption(true, item.name);
             }
         }.bind(this));
-        
+
         var htmlParsed = html
             .replace('{PatientFirstName}', pTempString['patFirstName']())
             .replace('{PatientLastName}', pTempString['patLastName']())
@@ -182,17 +183,17 @@ $.widget("oa.remindermessage", {
             .replace('{ProviderLastName}', pTempString['proLastName']())
             .replace('{AppDate}', pTempString['appDate']())
             .replace('{AppTime}', pTempString['appTime']())
-            .replace('{OfficeName}', pTempString['oName']())
+            .replace('{OfficeName}', pTempString['oName']());
 
         console.log(htmlParsed);
 
-        this.element.html(htmlParsed);  
+        this.element.html(htmlParsed);
     },
     createTemplateString: function() {
         var selfElement = this.element.clone();
 
         var children = selfElement.children();
-        $.each(children, function (index, item) {
+        $.each(children, function(index, item) {
             $(item).replaceWith(this.options.templateStrings[$(item).attr('name')]);
         }.bind(this));
 
@@ -201,35 +202,36 @@ $.widget("oa.remindermessage", {
 
         return html;
     },
-    _createWordList: function () {
-        var div = $('<div>', {
+    _createWordList: function() {
+        var $div = $('<div>', {
             style: 'display:inline-block; width:100%;',
             'class': ''
         });
 
-        div.append('<div class=\"btn-group btn-group-justified rm-wordList\" role=group aria-label=...></div>');
-        
-        $.each(this.options.wordList, function(index, item){
-            var index = $('<button>', {
-                text: item.abr,
+        $div.append('<div class=\"btn-group rm-wordList\" role=group aria-label=...></div>');
+
+        $.each(this.options.wordList, function(index, item) {
+            var button = $('<button>', {
+                text: item.value,
                 name: item.name,
                 title: item.value,
                 'class': 'btn btn-default'
             });
-            
-            this._on(index, {
-                click: function (e) {
+
+            this._on(button, {
+                click: function(e) {
                     this.insertNode(e);
                 }
             });
-            
-            div.find('.rm-wordList')
-                .append($('<div>', {'class': 'btn-group-sm btn-group'}).append(index));
+
+            $div
+                .find('.rm-wordList')
+                .append(button);
         }.bind(this));
 
-        return div;
+        return $div;
     },
-    _createMessageBox: function () {
+    _createMessageBox: function() {
         var div = $('<div>', {
             style: 'display:inline-block',
             'class': 'rm-messagebox',
@@ -239,35 +241,30 @@ $.widget("oa.remindermessage", {
 
         return div;
     },
-    insertNode: function (event) {     
+    insertNode: function(event) {
         if (this._checkIfAttrExists($(event.target).attr('name'))) {
             console.log('attr already exists');
         } else {
             var name = $(event.target).attr('name');
             var text = $(event.target).attr('title');
-            this.disableOption(name);
+            this.toggleOption(true, name);
             this.element.focus();
             this._pasteHtmlAtCaret('<input name=' + name + ' type=button class=clearable value="' + text + '" />');
         }
     },
-    enableOption: function (name) {
-        var wordList = this.element.parent().find('.rm-wordList')
-        var word = wordList.find('.btn-group-sm').find('button[name='+name+']');
-        word.attr('disabled', false);        
-    },
-    disableOption: function (name) {
-        var wordList = this.element.parent().find('.rm-wordList')
-        var word = wordList.find('.btn-group-sm').find('button[name='+name+']');
-        word.attr('disabled', true);
+    toggleOption: function(isEnabled, name) {
+        var wordList = this.element.parent().find('.rm-wordList');
+        var word = wordList.find('button[name=' + name + ']');
+        word.attr('disabled', isEnabled);
     },
     _checkIfAttrExists: function(name) {
-        if (this.element.find('[name='+name+']').length) {
+        if (this.element.find('[name=' + name + ']').length) {
             return true;
         } else {
             return false;
-        }  
+        }
     },
-    _pasteHtmlAtCaret: function (html) {
+    _pasteHtmlAtCaret: function(html) {
         var sel, range;
         if (window.getSelection) {
             // IE9 and non-IE
@@ -278,7 +275,7 @@ $.widget("oa.remindermessage", {
 
                 // Range.createContextualFragment() would be useful here but is
                 // non-standard and not supported in all browsers (IE9, for one)
-                var el = document.createElement("div");
+                var el = document.createElement('div');
                 el.innerHTML = html;
                 var frag = document.createDocumentFragment(),
                     node, lastNode;
@@ -296,7 +293,7 @@ $.widget("oa.remindermessage", {
                     sel.addRange(range);
                 }
             }
-        } else if (document.selection && document.selection.type != "Control") {
+        } else if (document.selection && document.selection.type !== 'Control') {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
         }

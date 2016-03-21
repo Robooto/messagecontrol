@@ -5,15 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Control</title>
-    
+
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <!-- endbower -->
-    
+
     <!-- Optional theme -->
     <style>
-        #voiceTemplate{
+        #voiceTemplate {
             height: 100px;
         }
     </style>
@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="voiceTemplate">Voice Message <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span></label>
                     <div id="voiceTemplate" class="form-control" contenteditable="true">Hello {PatientFirstName} {PatientLastName}</div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -37,12 +37,16 @@
     <script src="bower_components/jquery-ui/jquery-ui.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <!-- endbower -->
-    
+
     <!-- inject:js -->
     <script src="/js/rmMessageWidget.js"></script>
     <!-- endinject -->
-    
+
     <script>
+        String.prototype.replaceAll = function(search, replacement) {
+            var target = this;
+            return target.replace(new RegExp(search, 'g'), replacement);
+        };
         $(document).ready(function() {
             $('#voiceTemplate').remindermessage();
         });
