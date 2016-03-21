@@ -1,6 +1,6 @@
 $.widget('oa.remindermessage', {
     options: {
-        count: 60,
+        count: 10,
         wordList: [{
                 value: 'Patient First Name',
                 abr: 'Pat. First Name',
@@ -83,7 +83,8 @@ $.widget('oa.remindermessage', {
             'oName': function() {
                 return '{OfficeName}';
             }
-        }
+        },
+        templates: ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName']
     },
     _create: function() {
         console.log(this.element[0].id);
@@ -105,10 +106,23 @@ $.widget('oa.remindermessage', {
             keyup: function(e) {
                 this.updateCount(e);
                 this.checkTemplates(e);
+            },
+            keydown: function(e) {
+                this._keyblock(e);
             }
         });
 
         this._render();
+    },
+    _keyblock: function(e) {
+        if (this.element.text().length >= this.options.count && e.keyCode !== 8) {
+            //TODO Stop typing
+            console.log(e);
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+        }
+            
     },
     checkTemplates: function(e) {
         var htmlButtons = this.element.find('input');
@@ -124,7 +138,7 @@ $.widget('oa.remindermessage', {
         // Disable options that are parsed
         $.each(htmlButtons, function(index, item) {
             var name = $(item).attr('name');
-            var templates = ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName'];
+            var templates = this.options.templates;
             var templateItem = $.inArray(name, templates);
             if (templateItem > -1) {
                 buttonTemplates.filter('button[name=' + templates[templateItem] + ']').attr('disabled', true);
@@ -147,6 +161,9 @@ $.widget('oa.remindermessage', {
     updateCount: function(e) {
         if (this.element.text().length > this.options.count) {
             //TODO Stop typing
+            console.log(e);
+            e.stopPropagation();
+            e.preventDefault();
             return false;
         }
         this.element.siblings('span').children('span').text(this.countLeft());
