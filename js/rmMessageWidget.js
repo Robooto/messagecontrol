@@ -40,25 +40,25 @@ $.widget('oa.remindermessage', {
         ],
         parseTemplateStrings: {
             'patFirstName': function() {
-                return '<input type="button" class="clearable" name="patFirstName" value="Patient First Name" />';
+                return '<input type="button" class="clearable" name="patFirstName" contenteditable="false" readonly value="Patient First Name" />';
             },
             'patLastName': function() {
-                return '<input type="button" class="clearable" name="patLastName" value="Patient Last Name" />';
+                return '<input type="button" class="clearable" name="patLastName" contenteditable="false" readonly value="Patient Last Name" />';
             },
             'proFirstName': function() {
-                return '<input type="button" class="clearable" name="proFirstName" value="Provider First Name" />';
+                return '<input type="button" class="clearable" name="proFirstName" contenteditable="false" readonly value="Provider First Name" />';
             },
             'proLastName': function() {
-                return '<input type="button" class="clearable" name="proLastName" value="Provider Last Name" />';
+                return '<input type="button" class="clearable" name="proLastName" contenteditable="false" readonly value="Provider Last Name" />';
             },
             'appDate': function() {
-                return '<input type="button" class="clearable" name="appDate" value="Appointment Date" />';
+                return '<input type="button" class="clearable" name="appDate" contenteditable="false" readonly value="Appointment Date" />';
             },
             'appTime': function() {
-                return '<input type="button" class="clearable" name="appTime" value="Appointment Time" />';
+                return '<input type="button" class="clearable" name="appTime" contenteditable="false" readonly value="Appointment Time" />';
             },
             'oName': function() {
-                return '<input type="button" class="clearable" name="oName" value="Office Name" />';
+                return '<input type="button" class="clearable" name="oName" contenteditable="false" readonly value="Office Name" />';
             }
         },
         templateStrings: {
@@ -122,6 +122,11 @@ $.widget('oa.remindermessage', {
                 this.validate(true);
             }
         });
+        
+        function controlselectHandler(evt) {
+            evt.preventDefault();
+        }
+        document.body.addEventListener('mscontrolselect', controlselectHandler);
 
         this._render();
     },
