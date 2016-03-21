@@ -84,7 +84,11 @@ $.widget('oa.remindermessage', {
                 return '{OfficeName}';
             }
         },
-        templates: ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName']
+        templates: ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName'],
+        msgs: {
+            required: 'Message Control is required.  Please correct and try again.',
+            invalid: 'Message Control is invalid.  Please correct and try again.'
+        }
     },
     _create: function() {
         console.log(this.element[0].id);
@@ -106,28 +110,43 @@ $.widget('oa.remindermessage', {
             keyup: function(e) {
                 this.updateCount(e);
                 this.checkTemplates(e);
+                this.validate(true);
             },
             keydown: function(e) {
                 this._keyblock(e);
+                this.validate(true);
+            },
+            paste: function(e) {
+                this._dontAllowInput(e);
+                this.updateCount(e);
+                this.validate(true);
             }
         });
 
         this._render();
     },
+    _valid: true,
+    _dontAllowInput: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+    },
     _keyblock: function(e) {
-        console.log(e.keyCode);
+        
+        // Test for backspace or delete
         var key = event.keyCode || event.charCode;
-        var isNotBackspaceOrDelete;
-
-        if (key === 8 || key === 46) {
-            isNotBackspaceOrDelete = false;
-        } else {
-            isNotBackspaceOrDelete = true;
+        console.log(key);
+        var isNotBackspaceOrDelete = (key === 8 || key === 46) ? false : true;
+        
+        //Dont allow curly braces since they are used for templates
+        if (key === 221 || key === 219) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
         }
-        console.log(isNotBackspaceOrDelete);
+
+        // allow backspace or delete when at character limit
         if (this.element.text().length >= this.options.count && isNotBackspaceOrDelete) {
-            //TODO Stop typing
-            console.log(e);
             e.stopPropagation();
             e.preventDefault();
             return false;
@@ -168,15 +187,36 @@ $.widget('oa.remindermessage', {
     countLeft: function() {
         return this.element.text().length;
     },
-    updateCount: function(e) {
-        if (this.element.text().length > this.options.count) {
-            //TODO Stop typing
-            console.log(e);
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-        }
+    updateCount: function(e) {        
         this.element.siblings('span').children('span').text(this.countLeft());
+    },
+    validate: function(internal) {
+        var outputMsg = [];
+        this.element.removeClass('ui-state-error');
+        this.element.siblings('span').children('span').removeClass('ui-state-error');
+        
+        if (this.element.text().length > this.options.count) {
+            this._valid = false;
+            this.element.siblings('span').children('span').addClass('ui-state-error');
+            this.element.addClass('ui-state-error');
+            outputMsg.push(this.options.msgs.invalid);
+        } else {
+            this._valid = true;
+        }
+        
+        if(this.element.text().length < 1) {
+            if(!internal) {
+                this.element.siblings('span').children('span').addClass('ui-state-error');
+                this.element.addClass('ui-state-error');                
+            }
+            this._valid = false;
+            outputMsg.push(this.options.msgs.required);
+        }    
+        
+        return {
+            valid: this._valid,
+            messages: outputMsg,
+        }
     },
     _setOptions: function(key, value) {
         $.Widget.prototype._setOptions.call(this, key, value);
