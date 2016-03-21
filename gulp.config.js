@@ -9,7 +9,13 @@ module.exports = function() {
             json: require('./bower.json'),
             directory: './bower_components/',
             ignorePath: '../..'
-        }
+        },
+        /**
+         * Node settings
+         */
+        defaultPort: 8888,
+        nodeServer: 'index.js',
+        browserReloadDelay: 1000
     };
     
     config.getWiredepDefaultOptions = function() {
