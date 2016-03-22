@@ -221,7 +221,7 @@ $.widget('oa.remindermessage', {
         return {
             valid: this._valid,
             messages: outputMsg,
-        }
+        };
     },
     _setOptions: function(key, value) {
         $.Widget.prototype._setOptions.call(this, key, value);
