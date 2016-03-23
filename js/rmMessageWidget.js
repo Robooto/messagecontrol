@@ -256,6 +256,16 @@ $.widget('oa.remindermessage', {
             .replace('{AppDate}', pTempString['appDate']())
             .replace('{AppTime}', pTempString['appTime']())
             .replace('{OfficeName}', pTempString['oName']());
+        
+        // remove duplicate templates from the message
+        htmlParsed = htmlParsed
+            .replaceAll('{PatientFirstName}', '')
+            .replaceAll('{PatientLastName}', '')
+            .replaceAll('{ProviderFirstName}', '')
+            .replaceAll('{ProviderLastName}', '')
+            .replaceAll('{AppDate}', '')
+            .replaceAll('{AppTime}', '')
+            .replaceAll('{OfficeName}', '');
 
         console.log(htmlParsed);
 
@@ -369,6 +379,17 @@ $.widget('oa.remindermessage', {
             // IE < 9
             document.selection.createRange().pasteHTML(html);
         }
+    },
+    destroy: function() {
+        this.element.html('');
+        this.element.prev().remove();
+        this.element.siblings('span').remove();      
     }
 
 });
+
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
