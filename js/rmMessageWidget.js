@@ -87,7 +87,8 @@ $.widget('oa.remindermessage', {
         templates: ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName'],
         msgs: {
             required: 'Message Control is required.  Please correct and try again.',
-            invalid: 'Message Control is invalid.  Please correct and try again.'
+            invalid: 'Message Control is invalid.  Please correct and try again.',
+            noTemplate: 'No templates were selected.  Please correct and try again.'
         }
     },
     _create: function() {
@@ -140,7 +141,6 @@ $.widget('oa.remindermessage', {
         
         // Test for backspace or delete
         var key = event.keyCode || event.charCode;
-        console.log(key);
         var isNotBackspaceOrDelete = (key === 8 || key === 46) ? false : true;
         
         //Dont allow curly braces since they are used for templates
@@ -184,16 +184,16 @@ $.widget('oa.remindermessage', {
         var span = $('<span>', {
             style: 'display: block; text-align: left;',
             'class': 'h6',
-            html: '<span>' + this.countLeft() + '</span>' + ' / ' + this.options.count + ' characters'
+            html: '<span>' + this.charUsed() + '</span>' + ' / ' + this.options.count + ' characters'
         });
 
         return span;
     },
-    countLeft: function() {
+    charUsed: function() {
         return this.element.text().length;
     },
     updateCount: function(e) {        
-        this.element.siblings('span').children('span').text(this.countLeft());
+        this.element.siblings('span').children('span').text(this.charUsed());
     },
     validate: function(internal) {
         var outputMsg = [];
@@ -212,10 +212,19 @@ $.widget('oa.remindermessage', {
         if(this.element.text().length < 1) {
             if(!internal) {
                 this.element.siblings('span').children('span').addClass('ui-state-error');
-                this.element.addClass('ui-state-error');                
+                this.element.addClass('ui-state-error');   
+                this._valid = false;
+                outputMsg.push(this.options.msgs.required);             
             }
-            this._valid = false;
-            outputMsg.push(this.options.msgs.required);
+        }
+        
+        if(this.element.children().length < 1) {
+            if(!internal) {
+                this.element.addClass('ui-state-error');
+                outputMsg.push(this.options.msgs.noTemplate);
+                this._valid = false;               
+            }
+            
         }    
         
         return {
