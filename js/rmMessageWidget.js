@@ -92,7 +92,6 @@ $.widget('oa.remindermessage', {
         }
     },
     _create: function() {
-        console.log(this.element[0].id);
         var div = $('<div>', {});
         this.element.wrap(div);
         this.divWordList = this._createWordList();

@@ -19,6 +19,11 @@ describe('Message Control Tests', function() {
     expect($(fixture).next('span').length).toEqual(1);
   });
   
+  it('Message Control is destoryed sucessfully', function() {
+      $(fixture).remindermessage('destroy');
+      expect($(fixture).next('span').length).toEqual(0);
+  });
+  
   describe('Parse Template Tests', function() {
       it('Parse 1 template into a button', function() {
           $(fixture).html('Test {ProviderLastName}');
@@ -43,7 +48,7 @@ describe('Message Control Tests', function() {
       });
   });
   
-  describe('Template Buttons are disabled once used tests', function() {
+  describe('Template Buttons tests', function() {
      it('Check that buttons are disabled once the templates are used', function() {
          $(fixture).html('Test {ProviderLastName}');
          $(fixture).remindermessage('parseTemplateString').remindermessage('checkTemplates');
@@ -56,6 +61,13 @@ describe('Message Control Tests', function() {
          $(fixture).remindermessage('parseTemplateString').remindermessage('checkTemplates');
          
          expect($(fixture).parent().find('.rm-wordList').find('button:disabled').length).toEqual(3);         
+     });
+     
+     it('Clicking a button creates a template and disables the button', function(){
+         $(fixture).html('');
+         $(fixture).parent().find('.rm-wordList').find('button[name="patLastName"]').click();
+         
+         expect($(fixture).parent().find('.rm-wordList').find('button:disabled').length).toEqual(1);
      });
   });
   
@@ -103,6 +115,14 @@ describe('Message Control Tests', function() {
         
         expect(before).toEqual(0);
         expect($(fixture).remindermessage('charUsed')).toEqual(10);
+    });
+    
+    it('Can change the max count', function() {
+       var before = $(fixture).remindermessage('option', 'count');
+       expect(before).toEqual(15); 
+       $(fixture).remindermessage('option', 'count', 20);
+       var after = $(fixture).remindermessage('option', 'count');
+       expect(after).toEqual(20);
     });
   });
   

@@ -36,6 +36,10 @@ gulp.task('test', function(done) {
     startTests(true /* singleRun */, done);
 });
 
+gulp.task('autotest', function(done) {
+    startTests(false /* singleRun */, done);
+});
+
 gulp.task('build-spec', function() {
     log('building the spec runner');
     
@@ -143,20 +147,20 @@ function startBrowserSync(isDev, specRunner) {
 
 function startTests(singleRun, done) {
 
-    var karma = require('karma').server;
+    var Server = require('karma').Server;
     var excludeFiles = [];
       
-    karma.start({
+    new Server({
         configFile: __dirname + '/karma.conf.js',
         exclude: excludeFiles,
         singleRun: !!singleRun
-    }, karmaCompleted);
+    }, done).start();
        
     function karmaCompleted(karmaResult) {
         log('Karma completed');
 
         if (karmaResult === 1) {
-            done('karma: tests failed with code ' + karmaResult);
+            done('karma: some tests failed');
         } else {
             done();
         }
