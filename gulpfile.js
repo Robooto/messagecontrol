@@ -25,7 +25,40 @@ gulp.task('wiredep', function() {
 });
 
 gulp.task('serve-dev', function() {
-    var isDev = true;
+    serve(true, false);
+});
+
+gulp.task('serve-spec', function() {
+    serve(true, true);
+});
+
+gulp.task('test', function(done) {
+    startTests(true /* singleRun */, done);
+});
+
+gulp.task('build-spec', function() {
+    log('building the spec runner');
+    
+    var wiredep = require('wiredep').stream;
+    var options = config.getWiredepDefaultOptions();
+    var specs = config.specs; // to add
+    
+    options.devDependencies = true;
+    
+    return gulp
+        .src(config.specRunner)
+        .pipe(wiredep(options))
+        .pipe(gulpinject(gulp.src(config.js)))
+        .pipe(gulpinject(gulp.src(config.testlibraries, {read: false}),
+        {name: 'inject:testlibraries', relative: true}))
+        .pipe(gulpinject(gulp.src(specs, {read: false}),
+        {name: 'inject:specs'}))
+        .pipe(gulp.dest(config.tests));
+});
+
+//////////////
+
+function serve(isDev, specRunner) {
 
     var nodeOptions = {
         script: config.nodeServer, //TODO
@@ -49,7 +82,7 @@ gulp.task('serve-dev', function() {
         })
         .on('start', function() {
             log('*** nodemon started');
-            startBrowserSync();
+            startBrowserSync(isDev, specRunner);
         })
         .on('crash', function() {
             log('*** nodemon crashed');
@@ -57,9 +90,7 @@ gulp.task('serve-dev', function() {
         .on('exit', function() {
             log('*** nodemon exited');
         });
-});
-
-//////////////
+}
 
 //custom logger method
 function log(msg) {
@@ -74,7 +105,7 @@ function log(msg) {
     }
 }
 
-function startBrowserSync() {
+function startBrowserSync(isDev, specRunner) {
     if(args.nosync || browserSync.active) {
         return;
     }
@@ -103,5 +134,31 @@ function startBrowserSync() {
         reloadDelay: 1000
     };
     
+    if(specRunner) {
+        options.startPath = config.specRunner;
+    }
+    
     browserSync(options);
+}
+
+function startTests(singleRun, done) {
+
+    var karma = require('karma').server;
+    var excludeFiles = [];
+      
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    }, karmaCompleted);
+       
+    function karmaCompleted(karmaResult) {
+        log('Karma completed');
+
+        if (karmaResult === 1) {
+            done('karma: tests failed with code ' + karmaResult);
+        } else {
+            done();
+        }
+    }
 }

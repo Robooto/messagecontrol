@@ -138,9 +138,12 @@ $.widget('oa.remindermessage', {
         return false;
     },
     _keyblock: function(e) {
-        
+        var key;
         // Test for backspace or delete
-        var key = event.keyCode || event.charCode;
+        if(typeof event !== 'undefined') {
+            key = event.keyCode || event.charCode;           
+        }
+        
         var isNotBackspaceOrDelete = (key === 8 || key === 46) ? false : true;
         
         //Dont allow curly braces since they are used for templates

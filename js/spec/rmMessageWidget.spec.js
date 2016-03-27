@@ -1,10 +1,12 @@
+var fixture = '#fixture';
+
 describe('Message Control Tests', function() {
-    var fixture = '#fixture';
-  
-  beforeAll(function () {    
-      $(fixture).remindermessage({
-          count: 15
-      });
+    
+  beforeEach(function () {    
+        setFixtures("<div id='fixture'></div>");
+        $(fixture).remindermessage({
+            count: 15
+        });
   });
   
   afterAll(function () {
@@ -150,5 +152,5 @@ describe('Message Control Tests', function() {
           expect(actual.valid).toBeTruthy();
       });
   });
-  
-});
+}); 
+
