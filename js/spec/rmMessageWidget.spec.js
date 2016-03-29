@@ -69,6 +69,13 @@ describe('Message Control Tests', function() {
          
          expect($(fixture).parent().find('.rm-wordList').find('button:disabled').length).toEqual(1);
      });
+     
+     it('Clicking a button creates a template and disables the button', function(){
+         $(fixture).html('');
+         $(fixture).parent().find('.rm-wordList').find('button[name="patLastName"]').click();
+         
+         expect($(fixture).parent().find('.rm-wordList').find('button:disabled').length).toEqual(1);
+     });
   });
   
   describe('Character Counter Tests', function() {
