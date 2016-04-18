@@ -40,25 +40,25 @@ $.widget('oa.remindermessage', {
         ],
         parseTemplateStrings: {
             'patFirstName': function() {
-                return '<input type="button" class="clearable" name="patFirstName" contenteditable="false" readonly value="Patient First Name" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="patFirstName" contenteditable="false" readonly value="Patient First Name" />';
             },
             'patLastName': function() {
-                return '<input type="button" class="clearable" name="patLastName" contenteditable="false" readonly value="Patient Last Name" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="patLastName" contenteditable="false" readonly value="Patient Last Name" />';
             },
             'proFirstName': function() {
-                return '<input type="button" class="clearable" name="proFirstName" contenteditable="false" readonly value="Provider First Name" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="proFirstName" contenteditable="false" readonly value="Provider First Name" />';
             },
             'proLastName': function() {
-                return '<input type="button" class="clearable" name="proLastName" contenteditable="false" readonly value="Provider Last Name" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="proLastName" contenteditable="false" readonly value="Provider Last Name" />';
             },
             'appDate': function() {
-                return '<input type="button" class="clearable" name="appDate" contenteditable="false" readonly value="Appointment Date" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="appDate" contenteditable="false" readonly value="Appointment Date" />';
             },
             'appTime': function() {
-                return '<input type="button" class="clearable" name="appTime" contenteditable="false" readonly value="Appointment Time" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="appTime" contenteditable="false" readonly value="Appointment Time" />';
             },
             'oName': function() {
-                return '<input type="button" class="clearable" name="oName" contenteditable="false" readonly value="Office Name" />';
+                return '<input type="button" class="clearable btn btn-primary btn-xs" name="oName" contenteditable="false" readonly value="Office Name" />';
             }
         },
         templateStrings: {
@@ -92,7 +92,7 @@ $.widget('oa.remindermessage', {
         }
     },
     _create: function() {
-        var div = $('<div>', {});
+        var div = $('<div>', { 'class': 'panel panel-default', style: 'border: none;'});
         this.element.wrap(div);
         this.divWordList = this._createWordList();
         this.divWordList.prependTo(this.element.parent());
@@ -166,18 +166,18 @@ $.widget('oa.remindermessage', {
         var wordList = this.element.parent().find('.rm-wordList');
         var buttonTemplates = wordList.find('button');
 
-        // Enable buttons
+        // Enable buttons and unhiding buttons
         $.each(buttonTemplates, function(index, item) {
-            $(item).attr('disabled', false);
+            $(item).attr('disabled', false).removeClass('hidden');
         });
 
-        // Disable options that are parsed
+        // Disable and hide options that are parsed
         $.each(htmlButtons, function(index, item) {
             var name = $(item).attr('name');
             var templates = this.options.templates;
             var templateItem = $.inArray(name, templates);
             if (templateItem > -1) {
-                buttonTemplates.filter('button[name=' + templates[templateItem] + ']').attr('disabled', true);
+                buttonTemplates.filter('button[name=' + templates[templateItem] + ']').attr('disabled', true).addClass('hidden');
             }
         }.bind(this));
 
@@ -199,13 +199,11 @@ $.widget('oa.remindermessage', {
     },
     validate: function(internal) {
         var outputMsg = [];
-        this.element.removeClass('ui-state-error');
-        this.element.siblings('span').children('span').removeClass('ui-state-error');
+        this.element.parent('div').removeClass('ui-state-error');
         
         if (this.element.text().length > this.options.count) {
             this._valid = false;
-            this.element.siblings('span').children('span').addClass('ui-state-error');
-            this.element.addClass('ui-state-error');
+            this.element.parent('div').addClass('ui-state-error');
             outputMsg.push(this.options.msgs.invalid);
         } else {
             this._valid = true;
@@ -213,8 +211,7 @@ $.widget('oa.remindermessage', {
         
         if(this.element.text().length < 1) {
             if(!internal) {
-                this.element.siblings('span').children('span').addClass('ui-state-error');
-                this.element.addClass('ui-state-error');   
+                this.element.parent('div').addClass('ui-state-error');   
                 this._valid = false;
                 outputMsg.push(this.options.msgs.required);             
             }
@@ -222,7 +219,7 @@ $.widget('oa.remindermessage', {
         
         if(this.element.children().length < 1) {
             if(!internal) {
-                this.element.addClass('ui-state-error');
+                this.element.parent('div').addClass('ui-state-error');
                 outputMsg.push(this.options.msgs.noTemplate);
                 this._valid = false;               
             }
@@ -231,7 +228,7 @@ $.widget('oa.remindermessage', {
         
         return {
             valid: this._valid,
-            messages: outputMsg,
+            messages: outputMsg
         };
     },
     _setOptions: function(key, value) {
@@ -278,8 +275,6 @@ $.widget('oa.remindermessage', {
             .replaceAll('{AppTime}', '')
             .replaceAll('{OfficeName}', '');
 
-        console.log(htmlParsed);
-
         this.element.html(htmlParsed);
     },
     createTemplateString: function() {
@@ -297,8 +292,8 @@ $.widget('oa.remindermessage', {
     },
     _createWordList: function() {
         var $div = $('<div>', {
-            style: 'display:inline-block; width:100%;',
-            'class': ''
+            style: 'display:inline-block; width:100%; border: 1px solid #ddd;',
+            'class': 'panel-heading'
         });
 
         $div.append('<div class=\"btn-group rm-wordList\" role=group aria-label=...></div>');
@@ -308,11 +303,12 @@ $.widget('oa.remindermessage', {
                 text: item.value,
                 name: item.name,
                 title: item.value,
-                'class': 'btn btn-default'
+                'class': 'btn btn-default btn-sm'
             });
 
             this._on(button, {
                 click: function(e) {
+                    e.preventDefault();
                     this.insertNode(e);
                 }
             });
@@ -328,8 +324,7 @@ $.widget('oa.remindermessage', {
         var div = $('<div>', {
             style: 'display:inline-block',
             'class': 'rm-messagebox',
-            contenteditable: true,
-
+            contenteditable: true
         });
 
         return div;
@@ -342,13 +337,19 @@ $.widget('oa.remindermessage', {
             var text = $(event.target).attr('title');
             this.toggleOption(true, name);
             this.element.focus();
-            this._pasteHtmlAtCaret('<input name=' + name + ' type=button class=clearable value="' + text + '" />');
+            this._pasteHtmlAtCaret('<input name=' + name + ' type=button class=\"clearable btn btn-primary btn-xs\" value="' + text + '" />');
         }
     },
     toggleOption: function(isEnabled, name) {
         var wordList = this.element.parent().find('.rm-wordList');
         var word = wordList.find('button[name=' + name + ']');
         word.attr('disabled', isEnabled);
+        // hide buttons that are disabled
+        if(isEnabled){
+            word.addClass('hidden');
+        } else {
+            word.removeClass('hidden');
+        }
     },
     _checkIfAttrExists: function(name) {
         if (this.element.find('[name=' + name + ']').length) {
