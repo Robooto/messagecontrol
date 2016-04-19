@@ -145,6 +145,8 @@ $.widget('oa.remindermessage', {
         
         var isNotBackspaceOrDelete = (key === 8 || key === 46) ? false : true;
         
+        var isNotArrowKeys = (key === 37 || key === 39) ? false : true;
+        
         //Dont allow curly braces since they are used for templates
         if (key === 221 || key === 219) {
             e.stopPropagation();
@@ -153,7 +155,7 @@ $.widget('oa.remindermessage', {
         }
 
         // allow backspace or delete when at character limit
-        if (this.element.text().length >= this.options.count && isNotBackspaceOrDelete) {
+        if (this.element.text().length >= this.options.count && isNotBackspaceOrDelete && isNotArrowKeys) {
             e.stopPropagation();
             e.preventDefault();
             return false;
