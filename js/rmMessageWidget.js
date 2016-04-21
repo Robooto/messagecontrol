@@ -148,7 +148,7 @@ $.widget('oa.remindermessage', {
         
         var isNotBackspaceOrDelete = (key === 8 || key === 46) ? false : true;
         
-        var isNotArrowKeys = (key === 37 || key === 39) ? false : true;
+        var isNotArrowKeys = (key === 37 || key === 38 || key === 39 || key === 40) ? false : true;
         
         //Dont allow curly braces since they are used for templates
         if (key === 221 || key === 219) {
@@ -345,8 +345,9 @@ $.widget('oa.remindermessage', {
             var text = $(event.target).attr('title');
             this.toggleOption(true, name);
             this.element.focus();
-            this._pasteHtmlAtCaret('<input name=' + name + ' type=button class=\"clearable btn btn-default btn-xs\" value="&#xf00d; ' + text + '" />');
+            this._pasteHtmlAtCaret('<input name=' + name + ' type=button class=\"clearable btn btn-default btn-xs\" value="&#xf00d; ' + text + '" /> ');
             this.element.trigger('change');
+            this.updateCount();
         }
     },
     toggleOption: function(isEnabled, name) {
