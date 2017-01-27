@@ -174,5 +174,27 @@ describe('Message Control Tests', function() {
           expect(actual.valid).toBeTruthy();
       });
   });
+
+  describe('Update tests', function() {
+
+      it('Using update method updates text in control', function() {
+          $(fixture).html('Hello {PatientFirstName} {PatientLastName}').remindermessage('parseTemplateString');
+          $(fixture).remindermessage('updateControl', "Hello {PatientFirstName} ");
+          expect($(fixture).remindermessage('createTemplateString')).toEqual('Hello {PatientFirstName} ');
+      });
+
+      it('update method changes character counter', function () {
+          $(fixture).html('Hello {PatientFirstName} {PatientLastName}').remindermessage('parseTemplateString');
+          $(fixture).remindermessage('updateControl', "Hello");
+          expect($(fixture).remindermessage('charUsed')).toEqual(5);
+      });
+
+      it('update control with then validate - invalid', function () {
+          $(fixture).html('Hello {PatientFirstName} {PatientLastName}').remindermessage('parseTemplateString');
+          $(fixture).remindermessage('updateControl', "");
+          var actual = $(fixture).remindermessage('validate');
+          expect(actual.valid).toBeFalsy();
+      });
+  });
 }); 
 

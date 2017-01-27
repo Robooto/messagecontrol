@@ -87,7 +87,7 @@ $.widget('oa.remindermessage', {
         templates: ['patFirstName', 'patLastName', 'proFirstName', 'proLastName', 'appDate', 'appTime', 'oName'],
         msgs: {
             required: 'Message Control is required.  Please correct and try again.',
-            invalid: 'Message Control is invalid.  Please correct and try again.',
+            invalid: 'Character limit exceeded, please correct and try again.',
             noTemplate: 'No templates were selected.  Please correct and try again.'
         }
     },
@@ -249,6 +249,11 @@ $.widget('oa.remindermessage', {
         var name = $(event.target).attr('name');
         this.toggleOption(false, name);
         $(event.target).remove();
+    },
+    updateControl: function(template) {
+        this.element.html(template);
+        this._render();
+        this.checkTemplates();
     },
     parseTemplateString: function() {
         var html = this.element.html();
